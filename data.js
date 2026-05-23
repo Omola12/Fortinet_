@@ -13,6 +13,22 @@ let complaints = [
   }
 ];
 
+// Counter to make IDs 100% unique
+let complaintCounter = 1;
+
+function generateTrackingId() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  
+  // Format: FTN-YYYYMMDD-XXXX (XXXX is unique number)
+  const uniqueId = `FTN-${year}${month}${day}-${String(complaintCounter).padStart(4, '0')}`;
+  
+  complaintCounter++;   // Increase counter for next complaint
+  return uniqueId;
+}
+
 function getComplaints() {
   return complaints;
 }
@@ -30,7 +46,8 @@ function updateReply(id, replyText) {
   }
 }
 
-// Make functions globally available
+// Make functions global
 window.getComplaints = getComplaints;
 window.addComplaint = addComplaint;
 window.updateReply = updateReply;
+window.generateTrackingId = generateTrackingId;
