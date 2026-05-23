@@ -1,6 +1,5 @@
 // data.js
 let complaints = [
-  // Example data
   {
     id: "FTN-20260523001",
     date: "2026-05-23",
@@ -14,19 +13,24 @@ let complaints = [
   }
 ];
 
-export function getComplaints() {
+function getComplaints() {
   return complaints;
 }
 
-export function addComplaint(newComplaint) {
+function addComplaint(newComplaint) {
   complaints.push(newComplaint);
   return newComplaint;
 }
 
-export function updateReply(id, replyText) {
+function updateReply(id, replyText) {
   const complaint = complaints.find(c => c.id === id);
   if (complaint) {
     complaint.reply = replyText;
     complaint.status = "Resolved";
   }
 }
+
+// Make functions globally available
+window.getComplaints = getComplaints;
+window.addComplaint = addComplaint;
+window.updateReply = updateReply;
