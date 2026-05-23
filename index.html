@@ -56,13 +56,19 @@
         reply: ""
       };
 
-      addComplaint(newComplaint);
-      alert(`Complaint submitted successfully!\nYour Tracking ID: ${newComplaint.id}`);
+      addComplaint(newComplaint);   // ← Now this should work
+
+      alert(`✅ Complaint submitted successfully!\n\nYour Tracking ID: ${newComplaint.id}`);
       form.reset();
     });
 
     function trackComplaint() {
       const id = document.getElementById('trackingId').value.trim();
+      if (!id) {
+        alert("Please enter a Tracking ID");
+        return;
+      }
+
       const complaints = getComplaints();
       const complaint = complaints.find(c => c.id === id);
 
@@ -71,17 +77,16 @@
       if (complaint) {
         resultDiv.innerHTML = `
           <div class="card">
+            <p><strong>Tracking ID:</strong> ${complaint.id}</p>
             <p><strong>Status:</strong> <span class="status-${complaint.status.toLowerCase()}">${complaint.status}</span></p>
             <p><strong>Date:</strong> ${complaint.date}</p>
             <p><strong>Service:</strong> ${complaint.service}</p>
             <p><strong>Complaint:</strong> ${complaint.complaint}</p>
-            ${complaint.reply ? `<p><strong>Our Reply:</strong> ${complaint.reply}</p>` : '<p><strong>Our Reply:</strong> Pending...</p>'}
+            ${complaint.reply ? `<p><strong>Reply from Fortinet:</strong> ${complaint.reply}</p>` : '<p><strong>Reply:</strong> Pending admin response...</p>'}
           </div>
         `;
       } else {
-        resultDiv.innerHTML = `<p style="color:red;">No complaint found with this Tracking ID.</p>`;
+        resultDiv.innerHTML = `<p style="color:#f87171;">No complaint found with Tracking ID: ${id}</p>`;
       }
     }
   </script>
-</body>
-</html>
