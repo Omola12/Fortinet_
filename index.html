@@ -37,15 +37,17 @@
     </div>
   </div>
 
-  <script src="data.js"></script>
+    <script src="data.js"></script>
   <script>
     const form = document.getElementById('complaintForm');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const trackingId = generateTrackingId();   // ← New unique ID function
+
       const newComplaint = {
-        id: `FTN-${new Date().getFullYear()}${(new Date().getMonth()+1).toString().padStart(2,'0')}${new Date().getDate().toString().padStart(2,'0')}${String(Date.now()).slice(-4)}`,
+        id: trackingId,
         date: new Date().toISOString().split('T')[0],
         customerName: document.getElementById('name').value,
         email: document.getElementById('email').value,
@@ -56,9 +58,10 @@
         reply: ""
       };
 
-      addComplaint(newComplaint);   // ← Now this should work
+      addComplaint(newComplaint);
 
-      alert(`✅ Complaint submitted successfully!\n\nYour Tracking ID: ${newComplaint.id}`);
+      alert(`✅ Complaint Submitted Successfully!\n\nYour Tracking ID is:\n\n${trackingId}\n\nPlease save this ID to track your complaint.`);
+
       form.reset();
     });
 
@@ -82,11 +85,11 @@
             <p><strong>Date:</strong> ${complaint.date}</p>
             <p><strong>Service:</strong> ${complaint.service}</p>
             <p><strong>Complaint:</strong> ${complaint.complaint}</p>
-            ${complaint.reply ? `<p><strong>Reply from Fortinet:</strong> ${complaint.reply}</p>` : '<p><strong>Reply:</strong> Pending admin response...</p>'}
+            ${complaint.reply ? `<p><strong>Fortinet Reply:</strong> ${complaint.reply}</p>` : '<p><strong>Fortinet Reply:</strong> Pending...</p>'}
           </div>
         `;
       } else {
-        resultDiv.innerHTML = `<p style="color:#f87171;">No complaint found with Tracking ID: ${id}</p>`;
+        resultDiv.innerHTML = `<p style="color:#f87171;">No complaint found with this Tracking ID.</p>`;
       }
     }
   </script>
