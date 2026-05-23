@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortinet Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Fortinet - Admin Panel</h1>
+  </header>
+
+  <div class="container">
+    <h2>All Complaints</h2>
+    <div id="adminList"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    function loadComplaints() {
+      const complaints = getComplaints();
+      const container = document.getElementById('adminList');
+
+      let html = '';
+      complaints.forEach(comp => {
+        html += `
+          <div class="card">
+            <p><strong>ID:</strong> ${comp.id}</p>
+            <p><strong>Customer:</strong> ${comp.customerName}</p>
+            <p><strong>Service:</strong> ${comp.service}</p>
+            <p><strong>Complaint:</strong> ${comp.complaint}</p>
+            <p><strong>Status:</strong> <span class="status-${comp.status.toLowerCase()}">${comp.status}</span></p>
+            
+            <textarea id="reply-${comp.id}" placeholder="Type your reply here..." rows="3">${comp.reply || ''}</textarea>
+            <button onclick="sendReply('${comp.id}')">Send Reply</button>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html || "<p>No complaints yet.</p>";
+    }
+
+    window.sendReply = function(id) {
+      const replyText = document.getElementById(`reply-${id}`).value.trim();
+      if (replyText) {
+        updateReply(id, replyText);
+        alert("Reply sent successfully!");
+        loadComplaints();
+      }
+    };
+
+    // Load complaints when page opens
+    loadComplaints();
+  </script>
+</body>
+</html>
