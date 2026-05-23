@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortinet - Complaint Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Fortinet</h1>
+    <p>Customer Complaint & Tracking System</p>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h2>Submit a Complaint</h2>
+      <form id="complaintForm">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <select id="service" required>
+          <option value="">Select Service</option>
+          <option value="Product Purchase">Product Purchase</option>
+          <option value="Service Rendered">Service Rendered</option>
+        </select>
+        <textarea id="complaint" rows="5" placeholder="Describe your complaint..." required></textarea>
+        <button type="submit">Submit Complaint</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Track Your Complaint</h2>
+      <input type="text" id="trackingId" placeholder="Enter Tracking ID (e.g. FTN-20260523001)" style="margin-bottom:10px;">
+      <button onclick="trackComplaint()">Track</button>
+      <div id="trackResult" style="margin-top:15px;"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const form = document.getElementById('complaintForm');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const newComplaint = {
+        id: `FTN-${new Date().getFullYear()}${(new Date().getMonth()+1).toString().padStart(2,'0')}${new Date().getDate().toString().padStart(2,'0')}${String(Date.now()).slice(-4)}`,
+        date: new Date().toISOString().split('T')[0],
+        customerName: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        service: document.getElementById('service').value,
+        complaint: document.getElementById('complaint').value,
+        status: "Pending",
+        reply: ""
+      };
+
+      addComplaint(newComplaint);
+      alert(`Complaint submitted successfully!\nYour Tracking ID: ${newComplaint.id}`);
+      form.reset();
+    });
+
+    function trackComplaint() {
+      const id = document.getElementById('trackingId').value.trim();
+      const complaints = getComplaints();
+      const complaint = complaints.find(c => c.id === id);
+
+      const resultDiv = document.getElementById('trackResult');
+
+      if (complaint) {
+        resultDiv.innerHTML = `
+          <div class="card">
+            <p><strong>Status:</strong> <span class="status-${complaint.status.toLowerCase()}">${complaint.status}</span></p>
+            <p><strong>Date:</strong> ${complaint.date}</p>
+            <p><strong>Service:</strong> ${complaint.service}</p>
+            <p><strong>Complaint:</strong> ${complaint.complaint}</p>
+            ${complaint.reply ? `<p><strong>Our Reply:</strong> ${complaint.reply}</p>` : '<p><strong>Our Reply:</strong> Pending...</p>'}
+          </div>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style="color:red;">No complaint found with this Tracking ID.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
